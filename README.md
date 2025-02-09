@@ -13,6 +13,24 @@ Este módulo permite criar e gerenciar Storage Accounts no Azure com diferentes 
 ### Exemplo básico de uso do módulo:
 
 ```hcl
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.17.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
+}
+
+
 module "labels" {
   source       = "git::https://github.com/diogofrj/templates-tf-modules.git//examples/azure/labels?ref=v0.0.1"
   project      = "myapp"
@@ -21,7 +39,7 @@ module "labels" {
 }
 
 module "storage" {
-  source                   = "git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.1.0"
+  source                   = "git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.0.1"
 
   create_resource_group    = true
   resource_group_name      = module.labels.resource_group_name
