@@ -85,21 +85,21 @@ git:
 		if [ "$$overwrite" = "s" ]; then \
 			read -p "Digite sua mensagem de commit: " message; \
 			git commit -m "$$message"; \
-			git tag -a $$current_tag -m "$$message" -f; \
-			git push origin $$current_tag -f; \
+			git tag -a $(GIT_TAG) -m "$$message" -f; \
+			git push origin $(GIT_TAG) -f; \
 		else \
 			read -p "Digite sua mensagem de commit: " message; \
 			read -p "Digite a nova tag (ex: v1.0.0): " new_tag; \
 			git commit -m "$$message"; \
-			git tag -a $$new_tag -m "$$message"; \
-			git push origin $$new_tag; \
+			git tag -a $(new_tag) -m "$$message"; \
+			git push origin $(new_tag); \
 		fi \
 	else \
 		read -p "Digite sua mensagem de commit: " message; \
 		read -p "Digite a tag (ex: v1.0.0): " tag; \
 		git commit -m "$$message"; \
-		git tag -a $$tag -m "$$message"; \
-		git push origin $$tag; \
+		git tag -a $(tag) -m "$$message"; \
+		git push origin $(tag); \
 	fi
 	@git push
 
