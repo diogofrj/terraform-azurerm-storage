@@ -79,8 +79,8 @@ git:
 	@echo "Git add, commit e push"
 	@git add .
 	@current_tag=$$(git describe --tags --abbrev=0 2>/dev/null || echo "Nenhuma tag encontrada")
+	@echo "Tag atual: $$current_tag"
 	@if [ "$$current_tag" != "Nenhuma tag encontrada" ]; then \
-		echo "Tag atual: $$current_tag"; \
 		read -p "Deseja sobrescrever a tag atual? (s/n): " overwrite; \
 		if [ "$$overwrite" = "s" ]; then \
 			read -p "Digite sua mensagem de commit: " message; \
