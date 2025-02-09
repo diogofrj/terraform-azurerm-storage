@@ -1,4 +1,4 @@
-# 📂 Módulo de Storage Account Azure - Terraform
+# 📂 Módulo de Storage Account Azure - Terraform_
 
 Este módulo permite criar e gerenciar Storage Accounts no Azure com diferentes tipos de recursos de armazenamento como Blob Containers, File Shares, Tables e Queues.
 

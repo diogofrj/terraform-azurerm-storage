@@ -5,12 +5,18 @@ module "labels" {
   region       = "eastus2"
 }
 
+resource "random_string" "random_name" {
+  length  = 4
+  special = false
+  upper   = false
+}
+
 module "storage" {
   source                   = "../../"
   create_resource_group    = true
   resource_group_name      = module.labels.resource_group_name
   location                 = module.labels.region
-  storage_account_name     = module.labels.storage_name
+  storage_account_name     = "${module.labels.storage_name}-${random_string.random_name.result}"
   account_tier            = "Standard"  # Ou "Premium"
   account_kind            = "StorageV2"
   account_replication_type = "LRS"
