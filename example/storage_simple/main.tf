@@ -1,18 +1,3 @@
-# 📂 Módulo de Storage Account Azure - Terraform
-
-Este módulo permite criar e gerenciar Storage Accounts no Azure com diferentes tipos de recursos de armazenamento como Blob Containers, File Shares, Tables e Queues.
-
-## 📋 Pré-requisitos
-
-- Terraform >= 1.10
-- Provider AzureRM >= 4.17.0
-- Acesso a uma subscrição do Azure com permissões para criar recursos
-
-## 🚀 Como usar
-
-### Exemplo básico de uso do módulo:
-
-```hcl
 module "labels" {
   source       = "git::https://github.com/diogofrj/templates-tf-modules.git//examples/azure/labels?ref=v0.0.1"
   project      = "myapp"
@@ -21,14 +6,13 @@ module "labels" {
 }
 
 module "storage" {
-  source                   = "git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.1.0"
-
+  source                   = "../../"
   create_resource_group    = true
   resource_group_name      = module.labels.resource_group_name
   location                 = module.labels.region
   storage_account_name     = module.labels.storage_name
   account_tier            = "Standard"  # Ou "Premium"
-  account_kind            = "BlobStorage"
+  account_kind            = "StorageV2"
   account_replication_type = "LRS"
   enable_hierarchical_namespace = true
 
@@ -52,10 +36,3 @@ module "storage" {
     Project     = "myapp"
   }
 }
-```
-
-### TODO
-
-- [ ] Validar condicionais com account_tier Premium
-- [ ] Inserir configurações para rede publica/privada
-- [ ] Publicar no registry do terraform
