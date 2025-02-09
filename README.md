@@ -19,6 +19,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.17.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.5.1"
+    }
   }
 }
 
@@ -30,7 +34,6 @@ provider "azurerm" {
   }
 }
 
-
 module "labels" {
   source       = "git::https://github.com/diogofrj/templates-tf-modules.git//examples/azure/labels?ref=v0.0.1"
   project      = "myapp"
@@ -38,15 +41,21 @@ module "labels" {
   region       = "eastus2"
 }
 
-module "storage" {
-  source                   = "git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.0.1"
+resource "random_string" "random_name" {
+  length  = 4
+  special = false
+  upper   = false
+}
 
+module "storage" {
+  source  = "diogofrj/storage/azurerm"  # OU git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.0.1
+  version = "0.0.1"
   create_resource_group    = true
   resource_group_name      = module.labels.resource_group_name
   location                 = module.labels.region
-  storage_account_name     = module.labels.storage_name
+  storage_account_name     = "${module.labels.storage_name}-${random_string.random_name.result}"
   account_tier            = "Standard"  # Ou "Premium"
-  account_kind            = "BlobStorage"
+  account_kind            = "StorageV2"
   account_replication_type = "LRS"
   enable_hierarchical_namespace = true
 
