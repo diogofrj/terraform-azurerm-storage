@@ -78,11 +78,29 @@ git:
 	@echo ""
 	@echo "Git add, commit e push"
 	@git add .
-	@read -p "Digite sua mensagem de commit: " message; \
-	read -p "Digite a tag (ex: v1.0.0): " tag; \
-	git commit -m "$$message"; \
-	git tag -a $$tag -m "$$message" -f; \
-	git push origin $$tag -f
+	@current_tag=$$(git describe --tags --abbrev=0 2>/dev/null || echo "Nenhuma tag encontrada")
+	@if [ "$$current_tag" != "Nenhuma tag encontrada" ]; then \
+		echo "Tag atual: $$current_tag"; \
+		read -p "Deseja sobrescrever a tag atual? (s/n): " overwrite; \
+		if [ "$$overwrite" = "s" ]; then \
+			read -p "Digite sua mensagem de commit: " message; \
+			git commit -m "$$message"; \
+			git tag -a $$current_tag -m "$$message" -f; \
+			git push origin $$current_tag -f; \
+		else \
+			read -p "Digite sua mensagem de commit: " message; \
+			read -p "Digite a nova tag (ex: v1.0.0): " new_tag; \
+			git commit -m "$$message"; \
+			git tag -a $$new_tag -m "$$message"; \
+			git push origin $$new_tag; \
+		fi \
+	else \
+		read -p "Digite sua mensagem de commit: " message; \
+		read -p "Digite a tag (ex: v1.0.0): " tag; \
+		git commit -m "$$message"; \
+		git tag -a $$tag -m "$$message"; \
+		git push origin $$tag; \
+	fi
 	@git push
 
 clean:

@@ -52,8 +52,7 @@ resource "random_string" "random_name" {
 }
 
 module "storage" {
-  source  = "diogofrj/storage/azurerm"  # OU git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.0.1
-  version = "0.0.1"
+  source  = "../../"
   create_resource_group    = true
   resource_group_name      = module.labels.resource_group_name
   location                 = module.labels.region
