@@ -13,6 +13,7 @@ Este módulo permite criar e gerenciar Storage Accounts no Azure com diferentes 
 ### Exemplo básico de uso do módulo:
 
 ```hcl
+#--- providers.tf
 terraform {
   required_providers {
     azurerm = {
@@ -34,6 +35,7 @@ provider "azurerm" {
   }
 }
 
+#--- labels.tf
 module "labels" {
   source       = "git::https://github.com/diogofrj/templates-tf-modules.git//examples/azure/labels?ref=v0.0.1"
   project      = "myapp"
@@ -41,6 +43,8 @@ module "labels" {
   region       = "eastus2"
 }
 
+
+#--- main.tf
 resource "random_string" "random_name" {
   length  = 4
   special = false
@@ -81,7 +85,7 @@ module "storage" {
 }
 ```
 
-### TODO
+### 🚧 TODO
 
 - [ ] Validar condicionais com account_tier Premium
 - [ ] Inserir configurações para rede publica/privada
