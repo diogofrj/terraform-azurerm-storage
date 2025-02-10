@@ -11,10 +11,16 @@ resource "random_string" "random_name" {
   upper   = false
 }
 
+
+resource "azurerm_resource_group" "this" {
+  location = module.labels.region
+  name     = module.labels.resource_group_name
+}
+
 module "storage" {
   source                   = "../../"
-  create_resource_group    = true
-  resource_group_name      = module.labels.resource_group_name
+  create_resource_group    = false
+  resource_group_name      = azurerm_resource_group.this.name
   location                 = module.labels.region
   storage_account_name     = "${module.labels.storage_name}-${random_string.random_name.result}"
   account_tier            = "Standard"  # Ou "Premium"
@@ -42,3 +48,5 @@ module "storage" {
     Project     = "myapp"
   }
 }
+
+

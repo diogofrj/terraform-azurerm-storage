@@ -20,9 +20,13 @@ variable "tags" {
   default     = {}
 }
 
-variable "storage_account_name" {
-  description = "Nome da conta de armazenamento"
-  type        = string
+variable storage_account_name {
+    type = string
+    default = "aaaaaaaaaaaaaaaaaaaaaaaa"
+    validation {
+      condition     = can(regex("^[a-z0-9]{3,24}$", var.storage_account_name))
+      error_message = "--> Storage account name must start with letter or number, only contain letters, numbers and must be between 3 and 24 characters."
+    }
 }
 
 variable "account_tier" {
@@ -42,8 +46,8 @@ variable "account_kind" {
   default     = "StorageV2"
 
   validation {
-    condition     = contains(["StorageV2", "BlobStorage", "FileStorage", "BlockBlobStorage"], var.account_kind)
-    error_message = "O account_kind deve ser um dos valores válidos: StorageV2, BlobStorage, FileStorage, BlockBlobStorage."
+    condition     = can(regex("BlobStorage|BlockBlobStorage|FileStorage|Storage|StorageV2", var.storage_account_kind))
+    error_message = "--> Values allowed as Storage Account kind: BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2."
   }
 }
 
