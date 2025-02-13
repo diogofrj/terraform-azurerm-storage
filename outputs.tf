@@ -10,7 +10,11 @@ output "resource_group_location" {
 
 output "storage_account_name" {
   description = "Nome da conta de armazenamento criada"
-  value       = azurerm_storage_account._.name
+  value       = azurerm_storage_account.storage.name
+}
+output "storage_account_id" {
+  description = "ID da conta de armazenamento criada"
+  value       = azurerm_storage_account.storage.id
 }
 
 output "storage_container_name" {
@@ -47,9 +51,3 @@ output "queue_names" {
   description = "Lista de nomes das filas criadas"
   value       = var.create_queues ? azurerm_storage_queue._[*].name : []
 }
-
-
-
-
-
-

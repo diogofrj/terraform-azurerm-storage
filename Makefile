@@ -111,4 +111,3 @@ clean:
 	@echo "Limpando cache do Terraform"
 	@find . -type d -name '.terraform'  -prune -exec rm -rf {} \;
 	@find . -type f -name '.terraform.lock.hcl' -exec rm -f {} \;
-

@@ -1,6 +1,6 @@
 # 📂 Módulo de Storage Account Azure - Terraform
 
-Este módulo permite criar e gerenciar Storage Accounts no Azure com diferentes tipos de recursos de armazenamento como Blob Containers, File Shares, Tables e Queues.
+Este módulo permite criar e gerenciar Storage Accounts publico no Azure com diferentes tipos de recursos de armazenamento como Blob Containers, File Shares, Tables e Queues.
 
 ## 📋 Pré-requisitos
 
@@ -52,7 +52,8 @@ resource "random_string" "random_name" {
 }
 
 module "storage" {
-  source  = "../../"
+  source  = "diogofrj/storage/azurerm"  # OU git::https://github.com/diogofrj/terraform-azurerm-storage.git?ref=v0.0.1
+  version = "0.0.1"
   create_resource_group    = true
   resource_group_name      = module.labels.resource_group_name
   location                 = module.labels.region
@@ -82,10 +83,33 @@ module "storage" {
     Project     = "myapp"
   }
 }
+
+
+module "storage-priv-endpoint" {
+  depends_on = [module.storage, module.vnet]
+  source  = "diogofrj/storage/azurerm//modules/storage-priv-endpoint" ### OU source = "git::https://github.com/diogofrj/terraform-azurerm-storage.git//modules/storage-priv-endpoint"
+  storage_account_name = module.storage.storage_account_name
+  enabled_storage_services = ["blob", "file"] # Valores válidos: blob, file, table, queue, dfs
+  create_private_dns_zones = true
+  resource_group_name = module.storage.resource_group_name
+  location = "eastus2"
+  subnet_id = module.vnet.vnet_subnets_ids["subnet1"]
+  private_connection_resource_id = module.storage.storage_account_id
+  private_service_connection_name = "${module.storage.storage_account_name}-psc"
+  custom_network_interface_name = "${module.storage.storage_account_name}-nic"
+  private_dns_zone_group_name = "${module.storage.storage_account_name}-dns-zone-group"
+  private_dns_zone_virtual_network_link_name = "${module.storage.storage_account_name}-dns-zone-link"
+  virtual_network_id = module.vnet.vnet_id
+  tags = {
+    BusinessUnit = "CORP"
+    Env = "dev"
+    Owner = "user@example.com"
+    ProjectName = "demo-internal"
+    ServiceClass = "Gold"
+  }
+}
 ```
 
 ### 🚧 TODO
 
 - [ ] Validar condicionais com account_tier Premium
-- [ ] Inserir configurações para rede publica/privada
-- [ ] Publicar no registry do terraform

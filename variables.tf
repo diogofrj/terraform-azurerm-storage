@@ -20,13 +20,13 @@ variable "tags" {
   default     = {}
 }
 
-variable storage_account_name {
-    type = string
-    default = "aaaaaaaaaaaaaaaaaaaaaaaa"
-    validation {
-      condition     = can(regex("^[a-z0-9]{3,24}$", var.storage_account_name))
-      error_message = "--> Storage account name must start with letter or number, only contain letters, numbers and must be between 3 and 24 characters."
-    }
+variable "storage_account_name" {
+  type    = string
+  default = "aaaaaaaaaaaaaaaaaaaaaaaa"
+  validation {
+    condition     = can(regex("^[a-z0-9]{3,24}$", var.storage_account_name))
+    error_message = "--> Storage account name must start with letter or number, only contain letters, numbers and must be between 3 and 24 characters."
+  }
 }
 
 variable "account_tier" {
@@ -46,7 +46,7 @@ variable "account_kind" {
   default     = "StorageV2"
 
   validation {
-    condition     = can(regex("BlobStorage|BlockBlobStorage|FileStorage|Storage|StorageV2", var.storage_account_kind))
+    condition     = can(regex("BlobStorage|BlockBlobStorage|FileStorage|Storage|StorageV2", var.account_kind))
     error_message = "--> Values allowed as Storage Account kind: BlobStorage, BlockBlobStorage, FileStorage, Storage and StorageV2."
   }
 }
@@ -112,10 +112,10 @@ variable "create_file_share" {
   type        = bool
   default     = false
 
-#   validation {
-#     condition     = var.create_file_share == false || (var.create_file_share == true && ((var.account_tier == "Standard" && var.account_kind == "StorageV2") || (var.account_tier == "Premium" && var.account_kind == "FileStorage" && var.file_share_quota[0] >= 100)))
-#     error_message = "File Share só pode ser criado em contas de armazenamento Standard com account_kind StorageV2 ou Premium com account_kind FileStorage (neste caso a quota mínima é 100GB)."
-#   }
+  #   validation {
+  #     condition     = var.create_file_share == false || (var.create_file_share == true && ((var.account_tier == "Standard" && var.account_kind == "StorageV2") || (var.account_tier == "Premium" && var.account_kind == "FileStorage" && var.file_share_quota[0] >= 100)))
+  #     error_message = "File Share só pode ser criado em contas de armazenamento Standard com account_kind StorageV2 ou Premium com account_kind FileStorage (neste caso a quota mínima é 100GB)."
+  #   }
 }
 
 variable "file_share_name" {
@@ -136,9 +136,9 @@ variable "file_share_access_tier" {
   default     = ["Hot"]
 
   validation {
-    condition     = alltrue([
-      for tier in var.file_share_access_tier : 
-        var.account_tier == "Premium" ? tier == "Premium" : contains(["Hot", "Cool", "TransactionOptimized"], tier)
+    condition = alltrue([
+      for tier in var.file_share_access_tier :
+      var.account_tier == "Premium" ? tier == "Premium" : contains(["Hot", "Cool", "TransactionOptimized"], tier)
     ])
     error_message = "Para account_tier Premium, file_share_access_tier deve ser Premium. Para Standard, pode ser Hot, Cool ou TransactionOptimized."
   }

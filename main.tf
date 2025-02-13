@@ -10,10 +10,14 @@ resource "azurerm_resource_group" "rg" {
   tags     = var.tags
 }
 
-resource "azurerm_storage_account" "_" {
+locals {
+  resource_group_name = var.create_resource_group ? azurerm_resource_group.rg[0].name : data.azurerm_resource_group.rgrp[0].name
+}
+
+resource "azurerm_storage_account" "storage" {
   name                     = var.storage_account_name
-  resource_group_name      = var.create_resource_group ? azurerm_resource_group.rg[0].name : data.azurerm_resource_group.rgrp[0].name
-  location                 = var.create_resource_group ? azurerm_resource_group.rg[0].location : data.azurerm_resource_group.rgrp[0].location
+  resource_group_name      = local.resource_group_name
+  location                 = var.location
   account_tier             = var.account_tier
   account_replication_type = var.account_replication_type
   account_kind             = var.account_kind
@@ -39,26 +43,26 @@ resource "azurerm_storage_account" "_" {
 resource "azurerm_storage_container" "_" {
   count                 = var.create_blob_containers ? length(var.storage_container_name) : 0
   name                  = var.storage_container_name[count.index]
-  storage_account_id    = azurerm_storage_account._.id
+  storage_account_id    = azurerm_storage_account.storage.id
   container_access_type = var.container_access_type[count.index]
 }
 
 resource "azurerm_storage_share" "_" {
-  count                 = var.create_file_shares ? length(var.file_share_name) : 0
-  name                  = var.file_share_name[count.index]
-  storage_account_id    = azurerm_storage_account._.id
-  quota                 = var.file_share_quota[count.index]
-  access_tier           = var.file_share_access_tier[count.index]
+  count              = var.create_file_shares ? length(var.file_share_name) : 0
+  name               = var.file_share_name[count.index]
+  storage_account_id = azurerm_storage_account.storage.id
+  quota              = var.file_share_quota[count.index]
+  access_tier        = var.file_share_access_tier[count.index]
 }
 
 resource "azurerm_storage_table" "_" {
   count                = var.create_tables ? length(var.table_name) : 0
   name                 = var.table_name[count.index]
-  storage_account_name = azurerm_storage_account._.name
+  storage_account_name = azurerm_storage_account.storage.name
 }
 
 resource "azurerm_storage_queue" "_" {
   count                = var.create_queues ? length(var.queue_name) : 0
   name                 = var.queue_name[count.index]
-  storage_account_name = azurerm_storage_account._.name
+  storage_account_name = azurerm_storage_account.storage.name
 }
