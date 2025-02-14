@@ -3,6 +3,8 @@
 
 <a href="#"><img src="https://raw.githubusercontent.com/diogofrj/terraform-azurerm-storage/refs/heads/main/docs/banner.svg" /></a>
 
+
+
 ## Índice
 
 - [Requirements](#requirements)
