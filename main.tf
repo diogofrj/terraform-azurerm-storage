@@ -12,12 +12,13 @@ resource "azurerm_resource_group" "rg" {
 
 locals {
   resource_group_name = var.create_resource_group ? azurerm_resource_group.rg[0].name : data.azurerm_resource_group.rgrp[0].name
+  location            = var.create_resource_group ? azurerm_resource_group.rg[0].location : data.azurerm_resource_group.rgrp[0].location
 }
 
 resource "azurerm_storage_account" "storage" {
   name                     = var.storage_account_name
   resource_group_name      = local.resource_group_name
-  location                 = var.location
+  location                 = local.location
   account_tier             = var.account_tier
   account_replication_type = var.account_replication_type
   account_kind             = var.account_kind
